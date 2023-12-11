@@ -1,0 +1,6 @@
+.vscode
+session_name.session
+/**/__pycache__
+env/key
+
+package.json
