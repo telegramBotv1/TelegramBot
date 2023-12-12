@@ -26,9 +26,11 @@ class TelethonChen:
                 'dialogName': dialog.name,
                 'dialogId': dialog.id
             })
-        path = './env/dialogList.json'
-        if has_file(path, True):
-            write_file(path, dialogList)
+
+        if(save):
+            path = './config/dialogList.json'
+            if has_file(path, True):
+                write_file(path, dialogList)
 
         return dialogList
 
@@ -43,7 +45,7 @@ class TelethonChen:
         message_text = handleMessage.message
         current_time = formatTiem(mode='%Y-%m-%d')
         # 读数据 解析出当天的 然后添加
-        path = './env/orderInfo.json'
+        path = './config/orderInfo.json'
         if has_file(path, True):
             read_content = read_file(path)
             message = read_content["message"] or "{}"

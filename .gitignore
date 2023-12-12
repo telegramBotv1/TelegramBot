@@ -1,6 +1,9 @@
 .vscode
-session_name.session
+session_name.*
 /**/__pycache__
-env/key
+/config/key
+/config/dialogList.json
+/config/orderInfo.json
+/config/.env.json
 
 package.json

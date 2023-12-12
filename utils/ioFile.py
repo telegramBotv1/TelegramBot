@@ -29,7 +29,7 @@ def write_file(file_path, content, mode='w'):
 def has_file(file_path, create = True):
     red_result = read_file(file_path)
     if(red_result['code'] != 200 ):
-        if(create):
+        if create:
             write_file(file_path, '')
             return True
         return False
