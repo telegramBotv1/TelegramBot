@@ -5,6 +5,10 @@ import json
 from utils.ioFile import read_file, write_file, has_file
 from utils.time import formatTiem
 from utils.matchStr import matchStr
+import bin.openPositions as positions
+# import order.okx.okx as okx
+
+
 
 class TelethonChen:
     def __init__(self, api_id, api_hash, group_id, proxy):
@@ -39,8 +43,8 @@ class TelethonChen:
         await self._client.start()
 
     def storageMessages(self, handleMessage): 
+        print('监听到! 正在处理')
         matchJSON = matchStr(handleMessage.message)
-
         message_id = handleMessage.id
         message_text = handleMessage.message
         current_time = formatTiem(mode='%Y-%m-%d')
@@ -65,12 +69,30 @@ class TelethonChen:
         read_content[current_time].append(currentInfo)
         write_file(path, read_content)
 
+        return currentInfo
+
     # 获取群聊消息
     async def watchChats(self,group_entity):
         print('开启监听！')
         @self._client.on(events.NewMessage(chats=group_entity))
         async def handle_new_message(event):
-            self.storageMessages(event.message)
+            current_order = self.storageMessages(event.message)
+            self.openPositions(current_order)
+    
+
+    def openPositions(self, current_order):
+        operation = current_order['operation']
+        quantity = current_order['quantity']
+
+        switch = {
+            '开多': positions.openPositionsMore,
+            '开空': positions.openPositionsLess,
+            '平多': positions.unwindPositionsMore,
+            '平空': positions.unwindPositionsLess,
+        }
+        
+        switch.get(operation)(quantity)
+        
 
     async def main(self):
         tracemalloc.start()

@@ -26,8 +26,6 @@ else:
     print('请检查.config文件是否有 api_id, api_hash, group_id并不能为空')
     exit()
 
-print(read_content)
-
 api_id, api_hash, group_id = read_content['api_id'], read_content['api_hash'], read_content['group_id']
 
 proxy = (socks.SOCKS5, '127.0.0.1', 7890)

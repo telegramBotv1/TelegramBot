@@ -1,9 +1,10 @@
 .vscode
 session_name.*
 /**/__pycache__
+/order/**/key.json
 /config/key
 /config/dialogList.json
 /config/orderInfo.json
-/config/.env.json
+/config/.config.json
 
 package.json
