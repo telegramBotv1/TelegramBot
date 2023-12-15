@@ -5,10 +5,7 @@ import json
 from utils.ioFile import read_file, write_file, has_file
 from utils.time import formatTiem
 from utils.matchStr import matchStr
-import bin.openPositions as positions
-# import order.okx.okx as okx
-
-
+from bin.openPositions import openPositions
 
 class TelethonChen:
     def __init__(self, api_id, api_hash, group_id, proxy):
@@ -17,7 +14,7 @@ class TelethonChen:
         self._group_id = group_id
         self._proxy = proxy
         self._client = None
-    
+
     # 创建实例
     def createClient(self): 
         self._client = TelegramClient('session_name', self._api_id, self._api_hash, proxy = self._proxy)
@@ -57,7 +54,7 @@ class TelethonChen:
 
         currentInfo = {
             "message_id": message_id,
-            "message_text": message_text,
+            # "message_text": message_text,
             **matchJSON
         }
 
@@ -77,23 +74,14 @@ class TelethonChen:
         @self._client.on(events.NewMessage(chats=group_entity))
         async def handle_new_message(event):
             current_order = self.storageMessages(event.message)
-            self.openPositions(current_order)
+            self.exchangeInterface(current_order)
     
 
-    def openPositions(self, current_order):
-        operation = current_order['operation']
-        quantity = current_order['quantity']
+    #  监听到消息并进行开单 平仓处理
+    def exchangeInterface(self, current_order):
+        openPositions(current_order)
 
-        switch = {
-            '开多': positions.openPositionsMore,
-            '开空': positions.openPositionsLess,
-            '平多': positions.unwindPositionsMore,
-            '平空': positions.unwindPositionsLess,
-        }
         
-        switch.get(operation)(quantity)
-        
-
     async def main(self):
         tracemalloc.start()
         self.createClient()

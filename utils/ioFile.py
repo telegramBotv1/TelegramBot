@@ -1,4 +1,6 @@
 import json
+import sys
+
 def read_file(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as file:
@@ -36,3 +38,22 @@ def has_file(file_path, create = True):
     else:
         return True
 
+
+def create_file_content(path, string):
+    path = path
+    keys = string.split(',')
+    if has_file(path, False):
+        pass
+    else:
+        write_file(path, { key: '' for key in keys})
+
+    read_content = read_file(path)['message']
+    read_content = json.loads(read_content)
+
+    if all(key in read_content and read_content[key] for key in keys):
+        pass
+    else:
+        print('请检查.config文件是否有' + string + '并不能为空')
+        return False
+
+    return read_content
