@@ -1,9 +1,9 @@
 import okx.Account as Account
 import okx.Trade as Trade
+from utils.time import format_timestamp
 
-from exchanges.exchangeInterface import ExchangeInterface
 
-class OKXExchange(ExchangeInterface):
+class OKXExchange():
     def __init__(self, api_key, api_secret, passphrase):
         flag = "1"  # 真实交易 0 模拟交易 1
         self.accountAPI = Account.AccountAPI(api_key, api_secret, passphrase, False, flag, debug=False)
@@ -29,16 +29,47 @@ class OKXExchange(ExchangeInterface):
     def place_order(self, parameters):
         order_result = self.TradeAPI.place_order(**parameters)
         if order_result['code'] == '0':
-            print('开单成功')
-            order_id = order_result['data'][0]['ordId']
-            #去调用订单信息接口获取当前订单信息
-            if order_id:
-                self.get_order(parameters['instId'], order_id)
+            result_data = order_result['data']
+            for item in result_data:
+                order_id = item['ordId']
+                if order_id:
+                    self.get_order(parameters['instId'], order_id)
         else:
             print(order_result)
+        
+        self.get_order_list()
 
 
     def get_order(self, instId, ordId):
-        order_result = self.TradeAPI.get_order(instId, ordId)    
-        print(order_result)
+        current_order_result = self.TradeAPI.get_order(instId, ordId)  
+        if current_order_result['code'] == '0':
+            result_data = current_order_result['data']
+            for item in result_data:
+              print('id:' + item['ordId'])
+              print('杠杆:' + item['lever'])
+              print('方向:' + item['posSide'])
+              print('张数:' + item['sz'])
+              print('时间:' + format_timestamp(item['fillTime']))
+              print('-----------------------')
 
+
+    def get_order_list(self):
+        order_list_result = self.accountAPI.get_positions()
+        if order_list_result['code'] == '0':
+            positions_data = order_list_result['data']
+            for item in positions_data:
+                print('**********************')
+                print('创建时间:' + format_timestamp(item['cTime']))
+                print('指数价格:' + item['idxPx'])
+                print('可用持仓数量( / 1000):' + item['availPos'])
+                print('平均成交价:' + item['avgPx'])
+                print('保证金率(*100):' + item['mgnRatio'])
+                print('强平价格:' + item['liqPx'])
+                print('杠杆:' + item['lever'])
+                print('未实现盈亏:' + item['uplLastPx'])
+                print('未实现盈亏比例:' + item['uplRatioLastPx'])
+                print('标记价格:' + item['markPx'])
+                print('手续费:' + item['fee'])
+                print('最新成交价:' + item['last'])
+                print('实现盈亏:' + item['realizedPnl'])
+                print('**********************')
