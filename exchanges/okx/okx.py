@@ -35,11 +35,10 @@ class OKXExchange():
                 order_id = item['ordId']
                 if order_id:
                     self.get_order(parameters['instId'], order_id)
+                    self.get_order_list()
         else:
             print(order_result)
         
-        self.get_order_list()
-
 
     def get_order(self, instId, ordId):
         current_order_result = self.TradeAPI.get_order(instId, ordId)  

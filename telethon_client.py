@@ -112,7 +112,7 @@ class telethon_client:
     async def run(self, exchange_name):
         self.exchange_name = exchange_name
         global_const._init()
-        global_const.set_value('flag', "1") # 真实交易 0 模拟交易 1 使用字符串
+        global_const.set_value('flag', "1") # 真实交易 0 模拟交易 1  使用字符串
 
         await self.start_client()
         await self.get_my_dialogsList(True)
