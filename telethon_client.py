@@ -5,6 +5,7 @@ import json
 from utils.ioFile import read_file, write_file, has_file
 from utils.time import formatTiem
 from utils.matchStr import matchStr
+import global_const
 
 
 class telethon_client:
@@ -110,6 +111,9 @@ class telethon_client:
 
     async def run(self, exchange_name):
         self.exchange_name = exchange_name
+        global_const._init()
+        global_const.set_value('flag', "1") # 真实交易 0 模拟交易 1 使用字符串
+
         await self.start_client()
         await self.get_my_dialogsList(True)
         group_entity = await self._telegram_client.get_entity(self._group_id)

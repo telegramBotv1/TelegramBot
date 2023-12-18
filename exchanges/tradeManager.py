@@ -1,5 +1,6 @@
 from exchanges.okx.okx import OKXExchange
 # from exchanges.mexc.mexc import MEXCExchange
+import global_const
 
 class TradeManager:
     def __init__(self, exchange_name):
@@ -30,15 +31,17 @@ class TradeManager:
 
     #  开单方法
     def open_position(self, current_order):
-        margin = float(current_order['quantity'])
+        current_flag = global_const.get_value('flag')
+        margin = current_flag == '1' if float(current_order['quantity']) * 10 else float(current_order['quantity'])
         mgnMode = "cross" # cross 全仓 # isolated 逐仓
+
         parameters = {
             "instId": current_order['market'],
             "tdMode": mgnMode, 
             "side": current_order['side'],
             "posSide": current_order['posSide'],
             "ordType": "market",
-            "sz": margin * 10
+            "sz": margin
         }
 
         leverage = {

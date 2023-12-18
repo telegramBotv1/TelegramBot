@@ -1,11 +1,12 @@
 import okx.Account as Account
 import okx.Trade as Trade
 from utils.time import format_timestamp
+import global_const
 
 
 class OKXExchange():
     def __init__(self, api_key, api_secret, passphrase):
-        flag = "1"  # 真实交易 0 模拟交易 1
+        flag = global_const.get_value('flag')  
         self.accountAPI = Account.AccountAPI(api_key, api_secret, passphrase, False, flag, debug=False)
         self.TradeAPI = Trade.TradeAPI(api_key, api_secret, passphrase, False, flag, debug=False)
         
