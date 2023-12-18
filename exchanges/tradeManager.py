@@ -32,9 +32,9 @@ class TradeManager:
     #  开单方法
     def open_position(self, current_order):
         current_flag = global_const.get_value('flag')
-        margin = current_flag == '1' if float(current_order['quantity']) * 10 else float(current_order['quantity'])
-        mgnMode = "cross" # cross 全仓 # isolated 逐仓
 
+        margin = float(current_order['quantity']) * 10 if current_flag == '1' else float(current_order['quantity'])
+        mgnMode = "cross" # cross 全仓 # isolated 逐仓
         parameters = {
             "instId": current_order['market'],
             "tdMode": mgnMode, 
@@ -47,7 +47,7 @@ class TradeManager:
         leverage = {
             "instId": current_order['market'],
             "mgnMode": mgnMode,
-            "lever": "100"
+            "lever": "1"
         }
         # "posSide": current_order['posSide'],
         
@@ -55,4 +55,3 @@ class TradeManager:
         self._exchange.set_leverage(leverage)
         # 开单
         self._exchange.place_order(parameters)
-        
